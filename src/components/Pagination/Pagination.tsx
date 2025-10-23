@@ -1,15 +1,17 @@
 import ReactPaginate from "react-paginate";
 import css from "./Pagination.module.css";
 
+interface PaginationProps {
+  pageCount: number;
+  handlePageClick: (selectedItem: { selected: number }) => void;
+  currentPage: number;
+}
+
 export default function Pagination({
   pageCount,
   handlePageClick,
   currentPage,
-}: {
-  pageCount: number;
-  handlePageClick: (selectedItem: { selected: number }) => void;
-  currentPage: number;
-}) {
+}: PaginationProps) {
   return (
     <ReactPaginate
       breakLabel="..."

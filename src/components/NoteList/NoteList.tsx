@@ -3,7 +3,11 @@ import type { Note } from '../../types/note';
 import css from './NoteList.module.css';
 import { deleteNote } from '../../services/noteService';
 
-export default function NoteList({ notes }: { notes: Note[] }) {
+interface NoteListProps {
+  notes: Note[];
+}
+
+export default function NoteList({ notes }: NoteListProps) {
   const queryClient = useQueryClient();
 
   const { mutate: deleteMutation } = useMutation({

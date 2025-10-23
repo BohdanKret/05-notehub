@@ -16,7 +16,7 @@ const initialFormValues: Omit<Note, "id" | "createdAt" | "updatedAt"> = {
 };
 
 const ValidationSchema = Yup.object({
-  title: Yup.string().min(2).max(50).required("Title is required"),
+  title: Yup.string().min(3).max(50).required("Title is required"),
   content: Yup.string().max(500),
   tag: Yup.string()
     .oneOf(["Todo", "Work", "Personal", "Meeting", "Shopping"])
@@ -88,6 +88,7 @@ export default function NoteForm({ onSuccess }: NoteFormProps) {
               <option value="Work">Work</option>
               <option value="Personal">Personal</option>
               <option value="Meeting">Meeting</option>
+              <option value="Shopping">Shopping</option>
             </Field>
             <ErrorMessage name="tag" component="span" className={css.error} />
           </div>

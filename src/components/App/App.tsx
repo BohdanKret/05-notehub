@@ -3,12 +3,13 @@ import SearchBox from "../SearchBox/SearchBox";
 import css from "./App.module.css";
 import { useState } from "react";
 import Modal from "../Modal/Modal";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { fetchNotes } from "../../services/noteService";
 import NoteList from "../NoteList/NoteList";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import { useDebounce } from "use-debounce";
+import NoteForm from "../NoteForm/NoteForm";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -24,24 +25,22 @@ function App() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["notes", debouncedSearchTopic, currentPage],
     queryFn: () => fetchNotes(currentPage, debouncedSearchTopic),
+    placeholderData: keepPreviousData,
   });
 
   const handlePageClick = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTopic(e.target.value);
+  const handleSearchChange = (value: string) => {
+    setSearchTopic(value);
     setCurrentPage(1);
   };
 
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox
-          searchTopic={searchTopic}
-          handleSearchChange={handleSearchChange}
-        />
+        <SearchBox value={searchTopic} onChange={handleSearchChange} />
 
         {data?.totalPages && data.totalPages > 1 && (
           <Pagination
@@ -61,7 +60,11 @@ function App() {
 
       {data && !isLoading && <NoteList notes={data.notes} />}
 
-      {isModalOpen && <Modal onClose={closeModal} />}
+      {isModalOpen && (
+        <Modal onClose={closeModal}>
+          <NoteForm onSuccess={closeModal} />
+        </Modal>
+      )}
     </div>
   );
 }
